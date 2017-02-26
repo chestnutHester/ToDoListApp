@@ -150,33 +150,58 @@
 }
 
 - (IBAction)saveButtonPress:(id)sender {
-    //Remove completed items
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    NSManagedObjectContext *managedContext = appDelegate.persistentContainer.viewContext;
-    NSMutableArray *completedItems = [[NSMutableArray alloc] init];
-    for(int i=0; i<_toDoList.count; i++){
-        NSManagedObject *item = _toDoList[i];
-        if([[item valueForKey:@"completed"] isEqualToString:@"YES"]){
-            [completedItems addObject:item];
-        }
-    }
+    //Alert to confirm changes
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Save List"
+                                message:@"Are you sure you want to save? Completed items will be removed from the list."
+                                preferredStyle:UIAlertControllerStyleAlert];
     
-    for(int i=0; i<completedItems.count; i++){
-        NSManagedObject *item = completedItems[i];
-        @try{
-            [managedContext save:nil];
-            [_toDoList removeObject:item];
-            [managedContext deleteObject:item];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"%@", exception.reason);
-        }
-        @finally {
-            NSLog(@"Item deleted");
-        }
-    }
     
-    [_tableView reloadData];
-
+    
+    UIAlertAction *saveButton = [UIAlertAction
+                                 actionWithTitle:@"Save"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action) {
+                                     //Remove completed items
+                                     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+                                     NSManagedObjectContext *managedContext = appDelegate.persistentContainer.viewContext;
+                                     NSMutableArray *completedItems = [[NSMutableArray alloc] init];
+                                     for(int i=0; i<_toDoList.count; i++){
+                                         NSManagedObject *item = _toDoList[i];
+                                         if([[item valueForKey:@"completed"] isEqualToString:@"YES"]){
+                                             [completedItems addObject:item];
+                                         }
+                                     }
+                                     
+                                     for(int i=0; i<completedItems.count; i++){
+                                         NSManagedObject *item = completedItems[i];
+                                         @try{
+                                             [managedContext save:nil];
+                                             [_toDoList removeObject:item];
+                                             [managedContext deleteObject:item];
+                                         }
+                                         @catch (NSException *exception) {
+                                             NSLog(@"%@", exception.reason);
+                                         }
+                                         @finally {
+                                             NSLog(@"Item deleted");
+                                         }
+                                     }
+                                     
+                                     [_tableView reloadData];
+                                 }];
+    
+    UIAlertAction *cancelButton = [UIAlertAction
+                                   actionWithTitle:@"Cancel"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+                                       //Handle no, thanks button
+                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                   }];
+    
+    [alert addAction:saveButton];
+    [alert addAction:cancelButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 @end
