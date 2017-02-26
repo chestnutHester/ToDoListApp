@@ -110,16 +110,42 @@
 }
 
 - (IBAction)saveButtonPress:(id)sender {
-    //Remove completed items
-    NSMutableArray *remainingToDoList = [[NSMutableArray alloc] init];
-    for(ToDoItem *item in _toDoList){
-        if(![item getComplete]){
-            [remainingToDoList addObject:item];
-        }
-    }
+    //Alert to confirm changes
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Save List"
+                                message:@"Are you sure you want to save? Completed items will be removed from the list."
+                                preferredStyle:UIAlertControllerStyleAlert];
     
-    _toDoList = remainingToDoList;
     
-    [_tableView reloadData];
+    
+    UIAlertAction *saveButton = [UIAlertAction
+                                 actionWithTitle:@"Save"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action) {
+                                     //Remove completed items
+                                     NSMutableArray *remainingToDoList = [[NSMutableArray alloc] init];
+                                     for(ToDoItem *item in _toDoList){
+                                         if(![item getComplete]){
+                                             [remainingToDoList addObject:item];
+                                         }
+                                     }
+                                     
+                                     _toDoList = remainingToDoList;
+                                     
+                                     [_tableView reloadData];
+                                 }];
+    
+    UIAlertAction *cancelButton = [UIAlertAction
+                                   actionWithTitle:@"Cancel"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+                                       //Handle no, thanks button
+                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                   }];
+    
+    [alert addAction:saveButton];
+    [alert addAction:cancelButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 @end
