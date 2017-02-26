@@ -10,7 +10,6 @@
 
 @interface ViewController ()
 @property(strong,nonatomic) NSMutableArray *toDoList;
-@property(strong,nonatomic) NSString *toDoItemCellReuseIdentifier;
 @end
 
 @implementation ViewController
@@ -22,10 +21,8 @@
     //Create an array of all the ToDoItems
     _toDoList = [[NSMutableArray alloc] init];
     
-    _toDoItemCellReuseIdentifier = @"ToDoItemCell";
-    
     //Set the table view up for adding/removing cells
-    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:_toDoItemCellReuseIdentifier];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
 }
 
 
@@ -41,13 +38,48 @@
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath{
     UITableViewCell *cell = [_tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier:_toDoItemCellReuseIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier:@"Cell"];
     }
     cell.textLabel.text = _toDoList[indexPath.row];
     return cell;
 }
 
 - (IBAction)addButtonPress:(id)sender {
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"New Item"
+                                message:@"Enter the name of the new item"
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    
+    
+    UIAlertAction *saveButton = [UIAlertAction
+                                 actionWithTitle:@"Save"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action) {
+                                     //Handle your yes please button action here
+                                     UITextField *textField = alert.textFields[0];
+                                     [_toDoList addObject:textField.text];
+                                     [_tableView reloadData];
+                                 }];
+    
+    UIAlertAction *cancelButton = [UIAlertAction
+                                   actionWithTitle:@"Cancel"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+                                       //Handle no, thanks button
+                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                   }];
+    
+    [alert addAction:saveButton];
+    [alert addAction:cancelButton];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"New Name";
+        textField.keyboardType = UIKeyboardTypeDefault;
+    }];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    
 }
 
 - (IBAction)saveButtonPress:(id)sender {
