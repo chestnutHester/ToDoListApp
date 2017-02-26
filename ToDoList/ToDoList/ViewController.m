@@ -103,7 +103,7 @@
     
     
     UIAlertAction *saveButton = [UIAlertAction
-                                 actionWithTitle:@"Save"
+                                 actionWithTitle:@"Add"
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
                                      //Handle your yes please button action here
