@@ -12,4 +12,5 @@
 -(ToDoItem*)initWithDetails:(NSString*)name :(BOOL)complete;
 -(NSString*)getName;
 -(BOOL)getComplete;
+-(void)setComplete:(BOOL)complete;
 @end

@@ -9,7 +9,7 @@
 #import "ToDoItem.h"
 @interface ToDoItem()
 @property(strong,nonatomic) NSString *name;
-@property BOOL complete;
+@property (nonatomic) BOOL complete;
 @end
 
 @implementation ToDoItem
@@ -36,4 +36,7 @@
     return _complete;
 }
 
+-(void)setComplete:(BOOL)complete{
+    _complete = complete;
+}
 @end
