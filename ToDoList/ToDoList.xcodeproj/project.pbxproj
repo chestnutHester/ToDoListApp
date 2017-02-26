@@ -16,7 +16,6 @@
 		2410D0EA1E63359200CABE03 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2410D0E81E63359200CABE03 /* LaunchScreen.storyboard */; };
 		2410D0F51E63359200CABE03 /* ToDoListTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2410D0F41E63359200CABE03 /* ToDoListTests.m */; };
 		2410D1001E63359200CABE03 /* ToDoListUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2410D0FF1E63359200CABE03 /* ToDoListUITests.m */; };
-		2410D10F1E63360C00CABE03 /* ToDoItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2410D10E1E63360C00CABE03 /* ToDoItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,8 +53,6 @@
 		2410D0FB1E63359200CABE03 /* ToDoListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2410D0FF1E63359200CABE03 /* ToDoListUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ToDoListUITests.m; sourceTree = "<group>"; };
 		2410D1011E63359200CABE03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2410D10D1E63360C00CABE03 /* ToDoItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToDoItem.h; sourceTree = "<group>"; };
-		2410D10E1E63360C00CABE03 /* ToDoItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToDoItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,8 +113,6 @@
 				2410D0EB1E63359200CABE03 /* Info.plist */,
 				2410D0E31E63359100CABE03 /* ToDoList.xcdatamodeld */,
 				2410D0D71E63359100CABE03 /* Supporting Files */,
-				2410D10D1E63360C00CABE03 /* ToDoItem.h */,
-				2410D10E1E63360C00CABE03 /* ToDoItem.m */,
 			);
 			path = ToDoList;
 			sourceTree = "<group>";
@@ -285,7 +280,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2410D0DF1E63359100CABE03 /* ViewController.m in Sources */,
-				2410D10F1E63360C00CABE03 /* ToDoItem.m in Sources */,
 				2410D0DC1E63359100CABE03 /* AppDelegate.m in Sources */,
 				2410D0D91E63359100CABE03 /* main.m in Sources */,
 				2410D0E51E63359100CABE03 /* ToDoList.xcdatamodeld in Sources */,

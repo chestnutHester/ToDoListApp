@@ -7,7 +7,8 @@
 //
 
 #import "ViewController.h"
-#import "ToDoItem.h"
+//#import "ToDoItem.h"
+#import "AppDelegate.h"
 
 @interface ViewController ()
 @property(strong,nonatomic) NSMutableArray *toDoList;
@@ -23,8 +24,22 @@
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
     
-    //Create an array of all the ToDoItems
-    _toDoList = [[NSMutableArray alloc] init];
+    //Load the to do list
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *managedContext = appDelegate.persistentContainer.viewContext;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"ToDoItem"];
+    
+    @try{
+        NSArray *results = [managedContext executeFetchRequest:fetchRequest error:nil];
+        _toDoList = [[NSMutableArray alloc] initWithArray:results];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception.reason);
+    }
+    @finally {
+        NSLog(@"List retreived");
+    }
     
     //Set the table view up for adding/removing cells
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
@@ -42,14 +57,17 @@
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath{
     UITableViewCell *cell = [_tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    
+    
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier:@"Cell"];
     }
-    ToDoItem *currentItem = _toDoList[indexPath.row];
-    cell.textLabel.text = [currentItem getName];
+    
+    NSManagedObject *item = _toDoList[indexPath.row];
+    cell.textLabel.text = [item valueForKey:@"name"];
     
     //show a check mark if the item has been completed
-    if([currentItem getComplete]){
+    if([[item valueForKey:@"completed"] isEqualToString:@"YES"]){
         [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
     }
     else{
@@ -64,8 +82,14 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     //Toggle the complete property
-    ToDoItem *currentItem = _toDoList[indexPath.row];
-    [currentItem setComplete:![currentItem getComplete]];
+    NSManagedObject *currentItem = _toDoList[indexPath.row];
+    NSString *currentComplete = [currentItem valueForKey:@"completed"];
+    if([currentComplete isEqualToString:@"NO"]){
+        [currentItem setValue:@"YES" forKey:@"completed"];
+    }
+    else{
+        [currentItem setValue:@"NO" forKey:@"completed"];
+    }
     
     [tableView reloadData];
 }
@@ -84,9 +108,25 @@
                                  handler:^(UIAlertAction * action) {
                                      //Handle your yes please button action here
                                      UITextField *textField = alert.textFields[0];
-                                     ToDoItem *newItem = [[ToDoItem alloc] initWithDetails:textField.text :NO];
-                                     [_toDoList addObject:newItem];
-                                     [_tableView reloadData];
+                                     
+                                     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+                                     NSManagedObjectContext *managedContext = appDelegate.persistentContainer.viewContext;
+                                     NSManagedObject *item = [NSEntityDescription insertNewObjectForEntityForName:@"ToDoItem" inManagedObjectContext:managedContext];
+                                     [item setValue:textField.text forKey:@"name"];
+                                     [item setValue:@"NO" forKey:@"completed"];
+                                     
+                                     @try{
+                                         [managedContext save:nil];
+                                         [_toDoList addObject:item];
+                                     }
+                                     @catch (NSException *exception) {
+                                         NSLog(@"%@", exception.reason);
+                                     }
+                                     @finally {
+                                         NSLog(@"Item Saved");
+                                     }
+                                     
+                                    [_tableView reloadData];
                                  }];
     
     UIAlertAction *cancelButton = [UIAlertAction
@@ -110,16 +150,17 @@
 }
 
 - (IBAction)saveButtonPress:(id)sender {
-    //Remove completed items
-    NSMutableArray *remainingToDoList = [[NSMutableArray alloc] init];
-    for(ToDoItem *item in _toDoList){
-        if(![item getComplete]){
-            [remainingToDoList addObject:item];
-        }
-    }
-    
-    _toDoList = remainingToDoList;
-    
-    [_tableView reloadData];
+//    //Remove completed items
+//    NSMutableArray *remainingToDoList = [[NSMutableArray alloc] init];
+//    for(ToDoItem *item in _toDoList){
+//        if(![item getComplete]){
+//            [remainingToDoList addObject:item];
+//        }
+//    }
+//    
+//    _toDoList = remainingToDoList;
+//    
+//    [_tableView reloadData];
+
 }
 @end
