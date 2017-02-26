@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+- (IBAction)addButtonPress:(id)sender;
+- (IBAction)saveButtonPress:(id)sender;
+
 
 
 @end
