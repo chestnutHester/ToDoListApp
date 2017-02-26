@@ -150,17 +150,33 @@
 }
 
 - (IBAction)saveButtonPress:(id)sender {
-//    //Remove completed items
-//    NSMutableArray *remainingToDoList = [[NSMutableArray alloc] init];
-//    for(ToDoItem *item in _toDoList){
-//        if(![item getComplete]){
-//            [remainingToDoList addObject:item];
-//        }
-//    }
-//    
-//    _toDoList = remainingToDoList;
-//    
-//    [_tableView reloadData];
+    //Remove completed items
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *managedContext = appDelegate.persistentContainer.viewContext;
+    NSMutableArray *completedItems = [[NSMutableArray alloc] init];
+    for(int i=0; i<_toDoList.count; i++){
+        NSManagedObject *item = _toDoList[i];
+        if([[item valueForKey:@"completed"] isEqualToString:@"YES"]){
+            [completedItems addObject:item];
+        }
+    }
+    
+    for(int i=0; i<completedItems.count; i++){
+        NSManagedObject *item = completedItems[i];
+        @try{
+            [managedContext save:nil];
+            [_toDoList removeObject:item];
+            [managedContext deleteObject:item];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception.reason);
+        }
+        @finally {
+            NSLog(@"Item deleted");
+        }
+    }
+    
+    [_tableView reloadData];
 
 }
 @end
