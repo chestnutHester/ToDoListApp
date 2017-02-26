@@ -110,5 +110,16 @@
 }
 
 - (IBAction)saveButtonPress:(id)sender {
+    //Remove completed items
+    NSMutableArray *remainingToDoList = [[NSMutableArray alloc] init];
+    for(ToDoItem *item in _toDoList){
+        if(![item getComplete]){
+            [remainingToDoList addObject:item];
+        }
+    }
+    
+    _toDoList = remainingToDoList;
+    
+    [_tableView reloadData];
 }
 @end
